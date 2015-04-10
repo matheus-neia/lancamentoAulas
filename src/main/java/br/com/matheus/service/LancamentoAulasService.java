@@ -1,5 +1,6 @@
 package br.com.matheus.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +19,12 @@ public class LancamentoAulasService {
     //TODO: Verificar como carregar a lista de feriados. carregar como @Resource?
     private List<LocalDate> feriados;
     
-    public LancamentoAulasService(List<LocalDate> feriados) {
+  //TODO: Verificar como carregar a lista de feriados. carregar como @Resource?
+    private List<LocalDate> sabadosTrabalhados;
+    
+    public LancamentoAulasService(List<LocalDate> feriados, List<LocalDate> sabadosTrabalhados) {
     	this.feriados = feriados;
+    	this.sabadosTrabalhados = sabadosTrabalhados;
     }
 
 	public int getQuantidadeAula(String nomeMateria, HorarioEscolar horarioEscolar, LocalDate inicio, LocalDate fim) {
@@ -43,6 +48,41 @@ public class LancamentoAulasService {
 		}
 		
 		return quantidadeAula;
+	}
+	
+	public int getQuantidadeDiaUtil(LocalDate inicio, LocalDate fim) {
+		//TODO: validar se a data de inicio é menor que a data fim
+		int quantidadeDia = 0;
+
+		while(inicio.isBefore(fim) || inicio.isEqual(fim)) {
+			if (isFeriado(inicio)) {
+				logger.debug("Dia {} é um feriado", inicio);
+			} else if (isWeekenDay(inicio.getDayOfWeek()) && !sabadoTrabalhado(inicio)) {
+				logger.debug("Dia {} é um final de semana {}", inicio, inicio.getDayOfWeek());
+			} else {
+				quantidadeDia ++;
+				logger.debug("Dia {} é um dia útil", inicio);
+			}
+			inicio = inicio.plusDays(1);
+		}
+		return quantidadeDia;
+	}
+	
+	private boolean sabadoTrabalhado(LocalDate data) {
+		for (LocalDate sabado : sabadosTrabalhados) {
+			if (sabado.isEqual(data)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isWeekenDay(DayOfWeek dayOfWeek) {
+		if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public Map<Materia, Integer> getQuantidadeAulas() {

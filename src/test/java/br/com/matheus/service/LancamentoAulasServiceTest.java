@@ -20,6 +20,7 @@ public class LancamentoAulasServiceTest {
 	
 	private static HorarioEscolar horarioEscolar;
 	private static List<LocalDate> feriados;
+	private static List<LocalDate> sabadosTrabalhados;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -52,57 +53,94 @@ public class LancamentoAulasServiceTest {
     	
     	//carregar feriados
     	feriados = new ArrayList<>();
+    	feriados.add(LocalDate.of(2015, Month.FEBRUARY, 16)); //carnaval
     	feriados.add(LocalDate.of(2015, Month.FEBRUARY, 17)); //carnaval
+    	feriados.add(LocalDate.of(2015, Month.FEBRUARY, 18)); //carnaval
     	feriados.add(LocalDate.of(2015, Month.APRIL, 3)); //pascoa
+    	feriados.add(LocalDate.of(2015, Month.APRIL, 20)); //tiradentes
     	feriados.add(LocalDate.of(2015, Month.APRIL, 21)); //tiradentes
+    	feriados.add(LocalDate.of(2015, Month.MAY, 1)); //dia do trabalho
+    	feriados.add(LocalDate.of(2015, Month.JUNE, 4)); //corpus christi
+    	feriados.add(LocalDate.of(2015, Month.JUNE, 5)); //corpus christi
+    	
+    	
+    	//carregar sabados trabalhados
+    	sabadosTrabalhados = new ArrayList<>();
+    	sabadosTrabalhados.add(LocalDate.of(2015, Month.APRIL, 25));
+    	sabadosTrabalhados.add(LocalDate.of(2015, Month.MAY, 16));
+    	
 	}
 	
 	@Test
 	public void testGetQuantidadeAulaCienciasEmMarco() {
-    	LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados);
+    	LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
     	int qtdAulas = lancamentoAulas.getQuantidadeAula("Ciencias", horarioEscolar, LocalDate.of(2015, Month.MARCH, 1), LocalDate.of(2015, Month.MARCH, 31));
-    	
+    	System.out.println("A Quantidade de Aula de Ciencias em Marco é " + qtdAulas);
     	Assert.assertEquals("Quantidade de Aulas inesperada", 8, qtdAulas);
 	}
 	
 	@Test
 	public void testGetQuantidadeAulaHistoriaEmAbril() {
-		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados);
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
     	int qtdAulas = lancamentoAulas.getQuantidadeAula("Historia", horarioEscolar, LocalDate.of(2015, Month.APRIL, 1), LocalDate.of(2015, Month.APRIL, 30));
     	
-    	Assert.assertEquals("Quantidade de Aulas inesperada", 4, qtdAulas);
+    	Assert.assertEquals("Quantidade de Aulas inesperada", 3, qtdAulas);
 	}
 	
 	@Test
 	public void testGetQuantidadeAulaPortuguesEmAbril() {
-		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados);
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
     	int qtdAulas = lancamentoAulas.getQuantidadeAula("Portugues", horarioEscolar, LocalDate.of(2015, Month.APRIL, 1), LocalDate.of(2015, Month.APRIL, 30));
     	
-    	Assert.assertEquals("Quantidade de Aulas inesperada", 32, qtdAulas);
+    	Assert.assertEquals("Quantidade de Aulas inesperada", 30, qtdAulas);
 	}
 	
 	@Test
 	public void testGetQuantidadeAulaMatematicaEmAbril() {
-		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados);
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
     	int qtdAulas = lancamentoAulas.getQuantidadeAula("Matematica", horarioEscolar, LocalDate.of(2015, Month.APRIL, 1), LocalDate.of(2015, Month.APRIL, 30));
     	
-    	Assert.assertEquals("Quantidade de Aulas inesperada", 26, qtdAulas);
+    	Assert.assertEquals("Quantidade de Aulas inesperada", 25, qtdAulas);
 	}
 	
 	@Test
 	public void testGetQuantidadeAulaPortuguesFevereiroAteAbril() {
-		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados);
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
     	int qtdAulas = lancamentoAulas.getQuantidadeAula("Portugues", horarioEscolar, LocalDate.of(2015, Month.FEBRUARY, 1), LocalDate.of(2015, Month.APRIL, 30));
+    	
+    	Assert.assertEquals("Quantidade de Aulas inesperada", 93, qtdAulas);
+	}
+	
+	@Test
+	public void testGetQuantidadeAulaCienciasFevereiroAteAbril() {
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
+    	int qtdAulas = lancamentoAulas.getQuantidadeAula("Ciencias", horarioEscolar, LocalDate.of(2015, Month.FEBRUARY, 1), LocalDate.of(2015, Month.APRIL, 30));
+    	
+    	Assert.assertEquals("Quantidade de Aulas inesperada", 24, qtdAulas);
+	}
+	
+	@Test
+	public void testGetQuantidadeAulaPortuguesJaneiroAteAbril() {
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
+    	int qtdAulas = lancamentoAulas.getQuantidadeAula("Portugues", horarioEscolar, LocalDate.of(2015, Month.JANUARY, 28), LocalDate.of(2015, Month.APRIL, 30));
     	
     	Assert.assertEquals("Quantidade de Aulas inesperada", 98, qtdAulas);
 	}
 	
 	@Test
-	public void testGetQuantidadeAulaCienciasFevereiroAteAbril() {
-		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados);
-    	int qtdAulas = lancamentoAulas.getQuantidadeAula("Ciencias", horarioEscolar, LocalDate.of(2015, Month.FEBRUARY, 1), LocalDate.of(2015, Month.APRIL, 30));
-    	
-    	Assert.assertEquals("Quantidade de Aulas inesperada", 26, qtdAulas);
+	public void testGetQuantidadeDiaUtilJaneiroAteAbril() {
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
+    	int qtdDiaUtil = lancamentoAulas.getQuantidadeDiaUtil(LocalDate.of(2015, Month.JANUARY, 28), LocalDate.of(2015, Month.APRIL, 30));
+    	System.out.println("Dia Util Trabalhado foi de " + qtdDiaUtil);
+    	Assert.assertEquals("Quantidade de Dia Util inesperada", 62, qtdDiaUtil);
+	}
+	
+	@Test
+	public void testGetQuantidadeDiaUtilMaioAteJunho() {
+		LancamentoAulasService lancamentoAulas = new LancamentoAulasService(feriados, sabadosTrabalhados);
+    	int qtdDiaUtil = lancamentoAulas.getQuantidadeDiaUtil(LocalDate.of(2015, Month.MAY, 1), LocalDate.of(2015, Month.JUNE, 30));
+    	System.out.println("Dia Util Trabalhado foi de " + qtdDiaUtil);
+    	Assert.assertEquals("Quantidade de Dia Util inesperada", 41, qtdDiaUtil);
 	}
 
 	@Test
